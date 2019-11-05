@@ -1,0 +1,53 @@
+import { Component } from 'refast';
+import {PhotoField, Group, TextField, Field } from 'saltui';
+import Icon from 'salt-icon';
+
+export default class reditem extends Component {
+  constructor(props) {
+    super(props);
+   }
+  
+
+  render() {
+    const angleIconProps = { fill: 'rgba(31,56,88,0.40)', width: 20, height: 20 };
+    const t = this;
+    return (
+              <div className="item"> 
+                         {
+                          this.props.arr.map((item,index) => { //这个地方通过this.props.arr接收到父组件传过来的arr，然后在{}里面进行js的循环
+                              return (
+                                              <Group key={index}>
+                                              <Group.Head  className="t-FS12 t-PT10 t-PB10 t-PL20 t-PR20 t-MT20">加息券{index+1}<span  onClick={()=>t.props.parentdelOneItem(index)} className="t-FR" style={{color:'#09c'}}>删除</span></Group.Head>
+                                                  <Group.List className="t-MT0">
+                                                      <Field  required label="加息利率" errMsg={item.interestLevel.errtxt}  icon={<Icon name={item.interestLevel.icon?'angle-right':'cross-round'} {...angleIconProps} onClick={()=>t.props.parenthandleClearCommon('interestLevel',index)} />}>
+                                                        <div onClick={()=>t.props.parenthandleSelectCommon('interestLevel',index)}>{item.interestLevel.typetext}</div>
+                                                      </Field>
+                                                   
+                                                      <Field required label="起投金额" errMsg={item.minAmount.errtxt}  icon={<Icon name={item.minAmount.icon?'angle-right':'cross-round'} {...angleIconProps} onClick={()=>t.props.parenthandleClearCommon('minAmount',index)} />}>
+                                                        <div onClick={()=>t.props.parenthandleSelectCommon('minAmount',index)}>{item.minAmount.typetext}</div>
+                                                      </Field>
+                                                   
+                                                      <Field required label="适用产品和期限" errMsg={item.productDate.errtxt}  icon={<Icon name={item.productDate.icon?'angle-right':'cross-round'} {...angleIconProps} onClick={()=>t.props.parenthandleClearCommon('productDate',index)} />}>
+                                                        <div onClick={()=>t.props.parenthandleSelectCommon('productDate',index)}>{item.productDate.typetext}</div>
+                                                      </Field>
+                                                   
+                                                      <Field required label="有效期" errMsg={item.validityPeriod.errtxt}  icon={<Icon name={item.validityPeriod.icon?'angle-right':'cross-round'} {...angleIconProps} onClick={()=>t.props.parenthandleClearCommon('validityPeriod',index)} />}>
+                                                        <div onClick={()=>t.props.parenthandleSelectCommon('validityPeriod',index)}>{item.validityPeriod.typetext}</div>
+                                                      </Field>
+                                                   
+                                                      <Field required label="申请张数" errMsg={item.applyNum.errtxt}  icon={<Icon name={item.applyNum.icon?'angle-right':'cross-round'} {...angleIconProps} onClick={()=>t.props.parenthandleClearCommon('applyNum',index)} />}>
+                                                        <div onClick={()=>t.props.parenthandleSelectCommon('applyNum',index)}>{item.applyNum.typetext}</div>
+                                                      </Field>
+                                                   </Group.List>
+                                               </Group> 
+
+                                      )
+                                                        }
+                                            )
+                      }                                    
+                            
+                  
+               </div>
+            )
+            }
+      }

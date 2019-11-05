@@ -1,0 +1,27 @@
+{
+  "name": "untitled",
+  "author": "eloancn",
+  "version": "1.0.0",
+  "description": "An awesome project",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "start": "nowa server",
+    "build": "nowa build"
+  },
+  "homepage": "",
+  "license": "MIT",
+  "dependencies": {
+    "classnames": "~2.1.2",
+    "dingtalk-jsapi": "^2.8.7",
+    "natty-fetch": "~2.4.2",
+    "natty-storage": "~2.0.2",
+    "refast": "~1.2.3",
+    "saltui": "^4.8.13"
+  },
+  "devDependencies": {
+    "babel-plugin-import": "^1.6.2"
+  }
+}
