@@ -8,6 +8,7 @@ import RedBatch from 'components/red';
 import RedSingle from 'components/red/single';
 import InterestBatch from 'components/interest';
 import InterestSingle from 'components/interest/single';
+import Cash from 'components/cash';
 import logic from './logic';
 
 import './PageDing.less';
@@ -18,7 +19,8 @@ const localbasicJSON=JSON.parse(JSON.stringify(basicJSON));
 
  const showToast=(message)=>{
          dd.device.notification.toast({          
-                    text: message //提示信息
+                    text: message, //提示信息
+                    duration: 2,
                    
                 })
  }
@@ -29,14 +31,9 @@ export default class Page extends Component {
       loaded:true,
       isrender: false,
       error:true,
-      photoList: [{
-          name: '111',
-          response: {
-            url: 'http://gtms02.alicdn.com/tps/i2/TB1Xe3SMpXXXXX6XpXXTCU0QpXX-300-300.jpg',
-          },
-        },],
-
-        ajaxdata:{
+     
+      ajaxdata:{
+         photoList: [],
                   "department":{
                         "default":"请选择部门",
                         "typetext":"请选择部门",
@@ -67,6 +64,10 @@ export default class Page extends Component {
                             {
                                 "value":"3",
                                 "key": "加息券"
+                            },
+                            {
+                                "value":"5",
+                                "key": "现金奖励"
                             }]
                     },                       
                                     
@@ -295,13 +296,25 @@ export default class Page extends Component {
                     ajaxdata[prams]['typetext']=result.key                   
                     ajaxdata[prams]['value']=result.value                     
                     ajaxdata[prams]['icon']=false
+
+                    if(prams=="rewardType"){
+                      if(result.value==5){
+                         ajaxdata.reqType=2;
+                       }else{
+                         ajaxdata.reqType=1;
+                       }                    
+                    }
+                   
                     that.setState({ajaxdata});
-                    if(prams=="department"){
+                    if(prams=="department"){                    
                       that.dispatch('getActivityId',that.state.ajaxdata);
                     }else if(prams=="rewardType"){
-                      if(ajaxdata["activityName"]['value']){                         
-                         that.dispatch('getActivityInfo',prams,0,that.state.ajaxdata);                       
+                      //活动都清空  
+                      if(ajaxdata["department"]['value']){                         
+                        that.dispatch('getActivityId',that.state.ajaxdata);                   
                       }
+
+                      
                     }else{
                       that.dispatch('getActivityInfo',prams,0,that.state.ajaxdata);
                     }
@@ -390,51 +403,75 @@ export default class Page extends Component {
     submit=()=>{
       //逻辑判断提交条件
       let obj=this.state.ajaxdata;
-      if(obj.department.value==""){
-        showToast("请选择部门")
-       
-        return false;
-      }
-      if(obj.activityName.value==""){
-        showToast("请选择活动")
-       
-        return false;
-      }
-      else if(obj.list[0].interestLevel.value==""){
-        showToast("请选择金额")
-       
-        return false;
-      }
-      else if(obj.list[0].minAmount.value==""){
-        showToast("请选择变现金额")
-        
-        return false;
-      }
-      else if(obj.list[0].productDate.value==""){
-        showToast("请选择适用产品")
-       
-        return false;
-      }
-      else if(obj.list[0].productDate.value==""){
-        showToast("请选择有效期")
-        
-        return false;
-      }
-      else if(obj.singledata.userPhone.default==""){
-        showToast("请填写客户手机号")
-       
-        return false;
-      }
-      else if(obj.singledata.userName.default==""){
-        showToast("请填写客户名")
-       
-        return false;
-      }
-      else if(obj.singledata.applyReason.default==""){
-        showToast("请填写申请原因")
-       
-        return false;
-      }
+      obj.photoList=this.refs.CashChild.state.photoList;
+      if(obj.reqType==1){
+            if(obj.department.value==""){
+              showToast("请选择部门")      
+              return false;
+            }
+            else if(obj.activityName.value==""){
+              showToast("请选择活动")
+             
+              return false;
+            }
+            else if(obj.list[0].interestLevel.value==""){
+              showToast("请选择金额")
+             
+              return false;
+            }
+            else if(obj.list[0].minAmount.value==""){
+              showToast("请选择变现金额")
+              
+              return false;
+            }
+            else if(obj.list[0].productDate.value==""){
+              showToast("请选择适用产品")
+             
+              return false;
+            }
+            else if(obj.list[0].validityPeriod.value==""){
+              showToast("请选择有效期")
+              
+              return false;
+            }
+            else if(obj.singledata.userPhone.default==""){
+              showToast("请填写客户手机号")
+             
+              return false;
+            }
+            else if(obj.singledata.userName.default==""){
+              showToast("请填写客户名")
+             
+              return false;
+            }
+            else if(obj.singledata.applyReason.default==""){
+              showToast("请填写申请原因")
+             
+              return false;
+            }
+          }else{
+
+            if(obj.department.value==""){
+              showToast("请选择部门")      
+              return false;
+            }
+            else if(obj.activityName.value==""){
+              showToast("请选择活动")
+             
+              return false;
+            }
+            else if(obj.photoList.length==0){
+              showToast("请上传图片")
+             
+              return false;
+            }
+            else if(obj.singledata.applyReason.default==""){
+              showToast("请填写申请原因")
+             
+              return false;
+            }
+
+          }
 
 
       let {loaded}=this.state;
@@ -454,8 +491,10 @@ export default class Page extends Component {
     //alert(JSON.stringify(t.state))
     if(t.state.ajaxdata.rewardType.value==3){
       var Tag = t.state.ajaxdata.SingleOrBatch.value==1 ? InterestSingle : InterestBatch;//模板名称也可以根据数据变更,模板名称是只读属性，在渲染时定义
-    }else{
+    }else if(t.state.ajaxdata.rewardType.value==1){
       var Tag = t.state.ajaxdata.SingleOrBatch.value==1 ? RedSingle : RedBatch;//模板名称也可以根据数据变更,模板名称是只读属性，在渲染时定义
+    }else{
+      var Tag =Cash
     }
     
     //console.log(t.state.Tag)
@@ -464,6 +503,11 @@ export default class Page extends Component {
             <div className="container">          
                 {t.state.isrender ? (
                       <div>
+                      <Group.List >
+                        <Field required label="奖励类型"  icon={<Icon name={'angle-right'} {...angleIconProps}  />}>
+                            <div onClick={()=>t.handleSelectAct('rewardType')}>{t.state.ajaxdata.rewardType.typetext}</div>
+                          </Field>
+                      </Group.List>
                       <Group.List >
                         <Field required label="所选部门" errMsg={t.state.ajaxdata.department.errtxt}  icon={<Icon name={t.state.ajaxdata.department.icon?'angle-right':'cross-round'} {...angleIconProps} onClick={()=>t.handleClearAct('department')} />}>
                             <div onClick={()=>t.handleSelectAct('department')}>{t.state.ajaxdata.department.typetext}</div>
@@ -475,19 +519,15 @@ export default class Page extends Component {
                         <Field required label="所选活动" errMsg={t.state.ajaxdata.activityName.errtxt}  icon={<Icon name={t.state.ajaxdata.activityName.icon?'angle-right':'cross-round'} {...angleIconProps} onClick={()=>t.handleClearAct('activityName')} />}>
                             <div onClick={()=>t.handleSelectAct('activityName')}>{t.state.ajaxdata.activityName.typetext}</div>
                           </Field>
-                      </Group.List>
-                       <Group.List >
-                        <Field required label="奖励类型"  icon={<Icon name={'angle-right'} {...angleIconProps}  />}>
-                            <div onClick={()=>t.handleSelectAct('rewardType')}>{t.state.ajaxdata.rewardType.typetext}</div>
-                          </Field>
-                      </Group.List>
+                      </Group.List>                       
+                       {t.state.ajaxdata.rewardType.value!=5 ? (
                       <Group.List >
                         <Field required label="发放类型" icon={<Icon name={'angle-right'} {...angleIconProps} />}>
                             <div onClick={()=>t.handleChangeNum()}>{t.state.ajaxdata.SingleOrBatch.typetext}</div>
                           </Field>
                       </Group.List>                        
-                      
-                      <Tag parentuserInfo={t.state.ajaxdata.singledata}  arr={t.state.ajaxdata.list} parenthandleTextChange={t.handleTextChange} parentdelOneItem={t.delOneItem} parenthandleSelectCommon={t.handleSelectCommon} parenthandleClearCommon={t.handleClearCommon} />
+                       ):null}
+                      <Tag ref='CashChild' parentuserInfo={t.state.ajaxdata.singledata}  arr={t.state.ajaxdata.list} parenthandleTextChange={t.handleTextChange} parentdelOneItem={t.delOneItem} parenthandleSelectCommon={t.handleSelectCommon} parenthandleClearCommon={t.handleClearCommon} />
                       {t.state.ajaxdata.SingleOrBatch.value!=1 ? (
                       <div className="t-LH44 t-BCd t-FAC t-MT16" onClick={()=>t.addOneItem()}  style={{color:'#09c'}}>{t.state.ajaxdata.rewardType.value==3 ?"增加加息券":"增加红包"}+</div>
                       ):null}

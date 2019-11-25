@@ -27,8 +27,9 @@ export default {
 
   },
   async getActivityId({ fn, setState },ajaxdata) {
+
     const postdata={"deptment":ajaxdata.department.value,"reqType":ajaxdata.reqType};
-    
+     
     const realajaxdata  = await fn.DB.SomeModuleAPI.getActivityId(postdata);
    // console.log(realajaxdata)
     ajaxdata.activityName.value=""; 
@@ -182,6 +183,7 @@ export default {
   },
   async submit({ fn, setState },ajaxdata) {
     const totaldata={};
+    if(ajaxdata.rewardType.value!=5){
     totaldata.applyDeptName=ajaxdata.department.typetext;//申请部门名称（中文）
     totaldata.activityName=ajaxdata.activityName.typetext;//所选活动名称（中文）
     totaldata.activityId=ajaxdata.activityName.value;
@@ -202,11 +204,34 @@ export default {
     totaldata.validityDays=ajaxdata.list[0].validityPeriod.value;
     totaldata.upperserialnumber=ajaxdata.dingcode;//钉钉流水号
     totaldata.count=1;//申请张数
+  }else{
+    totaldata.applyDeptName=ajaxdata.department.typetext;//申请部门名称（中文）
+    totaldata.activityName=ajaxdata.activityName.typetext;//所选活动名称（中文）
+    totaldata.rewardTypeName=ajaxdata.rewardType.typetext;//申请类型名称（中文）
+    totaldata.activityId=ajaxdata.activityName.value;
+    totaldata.rewardId=ajaxdata.list[0].id;
+    totaldata.type=ajaxdata.rewardType.value;
+    totaldata.applyUser=ajaxdata.applyName;//申请人
+    /*let newarr=[];
+    for(let obj of ajaxdata.photoList){
+        const param = (({name,url}) => ({name, url}))(obj)
+        newarr.push(param)
+     } 
+    totaldata.photoList=newarr;//图片列表*/
+    totaldata.auditImgUrl=ajaxdata.photoList[0].url;//申请原因
+    totaldata.description=ajaxdata.singledata.applyReason.default;//申请原因
+    totaldata.upperserialnumber=ajaxdata.dingcode;//钉钉流水号
+    totaldata.count=1;//申请张数
+
+  }
+  
+ 
+
     //const totaldata={"activityId":"206","rewardId":750,"type":"1","mobile":"111111","applyUser":"aaaaaa",
     //"balance":"1","activateBalance":"100","realizationPro":",y30,y90,y180,y365,tc30,tc90,yp1,yp3,yp6,yp12,",
     //"validityDays":"5","upperserialnumber":"111"}
     //alert(JSON.stringify(totaldata))
-    //alert(JSON.stringify(totaldata))
+
     const result  = await fn.DB.SomeModuleAPI.submit(totaldata);
     setState({ loaded: true});
     //alert(JSON.stringify(result))
