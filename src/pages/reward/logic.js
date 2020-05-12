@@ -235,7 +235,86 @@ export default {
     const result  = await fn.DB.SomeModuleAPI.submit(totaldata);
     setState({ loaded: true});
     //alert(JSON.stringify(result))
-    if(result.code!="0000"){
+    if(result.code!="200"){
+      alert({
+          message: result.message,
+          title: "提示",//可传空
+          buttonName: "确定",
+          onSuccess : function() {
+              //onSuccess将在点击button之后回调
+              /*回调*/
+          },
+          onFail : function(err) {}
+      });      
+    }else{  
+      alert({
+          message: "提交成功",
+          title: "提示",//可传空
+          buttonName: "确定",
+          onSuccess : function() {
+               close({})
+          },
+          onFail : function(err) {}
+      }); 
+
+      
+    }
+    
+    
+  },
+   async submitBatch({ fn, setState },ajaxdata) {
+    const totaldata={};
+
+
+          totaldata.applyDeptName=ajaxdata.department.typetext;//申请部门名称（中文）
+          totaldata.activityName=ajaxdata.activityName.typetext;//所选活动名称（中文）
+          totaldata.activityId=ajaxdata.activityName.value;
+          
+
+          totaldata.type=ajaxdata.rewardType.value;
+          totaldata.sendType=ajaxdata.SingleOrBatch.value;
+
+          totaldata.applyUser=ajaxdata.applyName;//申请人
+
+          totaldata.description=ajaxdata.singledata.applyReason.default;//申请原因
+
+          totaldata.batchPrizeVOList =[];
+
+          ajaxdata.list.forEach((item) => {
+
+          let tempobj={};
+
+          tempobj.rewardId=item.id;
+
+          tempobj.prizeRate=item.interestLevel.value;
+          //totaldata.activateBalanceName=ajaxdata.list[0].minAmount.value.label;//变现/激活金额名称(含中文) 例： 20万
+
+          tempobj.prizeMinAmont=item.minAmount.value;
+          //totaldata.realizationProName=ajaxdata.list[0].productDate.value.label;//适用产品和期限名称中文
+
+          tempobj.realizationProName=item.productDate.value;
+
+          tempobj.validityDays=item.validityPeriod.value;
+          
+          tempobj.count=item.applyNum.value;//申请张数
+          tempobj.customerExcelVOList=item.photoList;
+
+          totaldata.batchPrizeVOList.push(tempobj);
+
+          })
+
+         totaldata.upperserialnumber=ajaxdata.dingcode;//钉钉流水号
+ 
+
+    //const totaldata={"activityId":"206","rewardId":750,"type":"1","mobile":"111111","applyUser":"aaaaaa",
+    //"balance":"1","activateBalance":"100","realizationPro":",y30,y90,y180,y365,tc30,tc90,yp1,yp3,yp6,yp12,",
+    //"validityDays":"5","upperserialnumber":"111"}
+    //alert(JSON.stringify(totaldata))
+
+    const result  = await fn.DB.SomeModuleAPI.submitBatch(totaldata);
+    setState({ loaded: true});
+    //alert(JSON.stringify(result))
+    if(result.code!="200"){
       alert({
           message: result.message,
           title: "提示",//可传空

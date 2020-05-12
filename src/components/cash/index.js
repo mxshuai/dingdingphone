@@ -20,7 +20,7 @@ export default class reditem extends Component {
     });
   }
 
-  onChange=(fieldData, photoList)=> {
+  onChange=(fieldData, photos)=> {
    // alert(JSON.stringify(fieldData))
     const res=fieldData.value[0].response;
     if(res.code=="200"){
@@ -32,8 +32,6 @@ export default class reditem extends Component {
       alert(res.message)
     }
     
-   
-   
   }
   
 

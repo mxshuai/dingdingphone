@@ -36,12 +36,33 @@ const basicJSON = {
                                   },
                                    "applyNum":{
                                       "default":"申请张数",
-                                      "typetext":"请选择申请张数",
+                                      "typetext":"1张",
                                       "icon":true,
                                       "errtxt":"",
-                                      "value":'',
-                                      "source":[]
+                                      "value":'1',
+                                      "source":[{
+                                                  "value":"1",
+                                                  "key": "1张"
+                                              }, 
+                                              {
+                                                  "value":"2",
+                                                  "key": "2张"
+                                              },
+                                              {
+                                                  "value":"3",
+                                                  "key": "3张"
+                                              },
+                                              {
+                                                  "value":"4",
+                                                  "key": "4张"
+                                              },
+                                              {
+                                                  "value":"5",
+                                                  "key": "5张"
+                                              }]
                                   },
+                                  "fileList":[],
+                                  "photoList":[],
                                   "id":''
                     };
 const urlPrefix = isDev ? '/mock/' : '/';

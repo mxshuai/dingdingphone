@@ -247,8 +247,11 @@ export default class Page extends Component {
                     ajaxdata["list"][index][prams]['value']=result.value                      
                     ajaxdata["list"][index][prams]['icon']=false
                     that.setState({ajaxdata});   
-                    //alert(JSON.stringify(ajaxdata))                  
-                    that.dispatch('getActivityInfo',prams,index,that.state.ajaxdata);
+                    //alert(JSON.stringify(ajaxdata)) 
+                    if(prams!="applyNum"){
+                       that.dispatch('getActivityInfo',prams,index,that.state.ajaxdata);
+                    }                 
+                   
                     
                     
           },
@@ -328,7 +331,7 @@ export default class Page extends Component {
   }
   //单张与批量选择
    handleChangeNum=()=> {
-    return false;
+    //return false;
 //this.dispatch('getActivityId',this.state.ajaxdata);
      var that = this;
     let ajaxdata={...this.state.ajaxdata}
@@ -378,7 +381,7 @@ export default class Page extends Component {
    
      let ajaxdata={...this.state.ajaxdata}
      let localbasicJSON=JSON.parse(JSON.stringify(basicJSON));
-      alert(JSON.stringify(ajaxdata["list"][0]["interestLevel"]))
+     // alert(JSON.stringify(ajaxdata["list"][0]["interestLevel"]))
 
      localbasicJSON["interestLevel"]=JSON.parse(JSON.stringify(ajaxdata.list[0].interestLevel))
      localbasicJSON["interestLevel"]['typetext']=JSON.parse(JSON.stringify(ajaxdata.list[0].interestLevel)).default;
@@ -398,57 +401,155 @@ export default class Page extends Component {
      let ajaxdata={...this.state.ajaxdata}
      ajaxdata.list.splice(ajaxdata.list.findIndex(item => item.index === num), 1)
      this.setState({ajaxdata});
-     console.log(ajaxdata.list)
+    // console.log(ajaxdata.list)
+  }
+  handelPhotoDelete=(num,index)=>{
+    let ajaxdata={...this.state.ajaxdata}
+    const tempfileList = ajaxdata.list[index].fileList.filter((item, i) =>
+      num !== i
+    ) || [];
+    const tempphotoList = ajaxdata.list[index].photoList.filter((item, i) =>
+      num !== i
+    ) || [];
+    ajaxdata.list[index].fileList=tempfileList;
+    ajaxdata.list[index].photoList=tempphotoList;
+    this.setState({ajaxdata});
+  }
+
+  handelPhotoChange=(fieldData, photos,index)=> {
+
+    const res=fieldData.value[0].response;   
+    if(res.code=="200"){
+      let ajaxdata={...this.state.ajaxdata}
+      let photo={uploadUrl:res.data,fileName:fieldData.value[0].name};
+      ajaxdata.list[index].photoList.push(photo)
+      ajaxdata.list[index].fileList=photos;
+      this.setState({ajaxdata});
+       
+    }else{
+
+          dd.device.notification.alert({
+              message: res.message,
+              title: "提示",//可传空
+              buttonName: "确定",
+              onSuccess : function() {
+                  //onSuccess将在点击button之后回调
+                  /*回调*/
+              },
+              onFail : function(err) {}
+          });
+
+    }
+    
   }
     submit=()=>{
       //逻辑判断提交条件
       let obj=this.state.ajaxdata;
       obj.photoList=this.refs.CashChild.state.photoList;
       if(obj.reqType==1){
-            if(obj.department.value==""){
-              showToast("请选择部门")      
-              return false;
-            }
-            else if(obj.activityName.value==""){
-              showToast("请选择活动")
-             
-              return false;
-            }
-            else if(obj.list[0].interestLevel.value==""){
-              showToast("请选择金额")
-             
-              return false;
-            }
-            else if(obj.list[0].minAmount.value==""){
-              showToast("请选择变现金额")
-              
-              return false;
-            }
-            else if(obj.list[0].productDate.value==""){
-              showToast("请选择适用产品")
-             
-              return false;
-            }
-            else if(obj.list[0].validityPeriod.value==""){
-              showToast("请选择有效期")
-              
-              return false;
-            }
-            else if(obj.singledata.userPhone.default==""){
-              showToast("请填写客户手机号")
-             
-              return false;
-            }
-            else if(obj.singledata.userName.default==""){
-              showToast("请填写客户名")
-             
-              return false;
-            }
-            else if(obj.singledata.applyReason.default==""){
-              showToast("请填写申请原因")
-             
-              return false;
-            }
+              if(obj.SingleOrBatch.value==1){
+                  if(obj.department.value==""){
+                    showToast("请选择部门")      
+                    return false;
+                  }
+                  else if(obj.activityName.value==""){
+                    showToast("请选择活动")
+                   
+                    return false;
+                  }
+                  else if(obj.list[0].interestLevel.value==""){
+                    showToast("请选择金额")
+                   
+                    return false;
+                  }
+                  else if(obj.list[0].minAmount.value==""){
+                    showToast("请选择变现金额")
+                    
+                    return false;
+                  }
+                  else if(obj.list[0].productDate.value==""){
+                    showToast("请选择适用产品")
+                   
+                    return false;
+                  }
+                  else if(obj.list[0].validityPeriod.value==""){
+                    showToast("请选择有效期")
+                    
+                    return false;
+                  }
+                  else if(obj.singledata.userPhone.default==""){
+                    showToast("请填写客户手机号")
+                   
+                    return false;
+                  }
+                  else if(obj.singledata.userName.default==""){
+                    showToast("请填写客户名")
+                   
+                    return false;
+                  }
+                  else if(obj.singledata.applyReason.default==""){
+                    showToast("请填写申请原因")
+                   
+                    return false;
+                  }
+                }else{
+
+                  if(obj.department.value==""){
+                    showToast("请选择部门")      
+                    return false;
+                  }
+                  else if(obj.activityName.value==""){
+                    showToast("请选择活动")
+                   
+                    return false;
+                  }
+
+                   for(let i=0;i<obj.list.length;i++){
+
+                      if(obj.list[i].interestLevel.value==""){
+                        showToast("请选择金额")
+                       
+                        return false;
+                      }
+                      else if(obj.list[i].minAmount.value==""){
+                        showToast("请选择变现金额")
+                        
+                        return false;
+                      }
+                      else if(obj.list[i].productDate.value==""){
+                        showToast("请选择适用产品")
+                       
+                        return false;
+                      }
+                      else if(obj.list[i].validityPeriod.value==""){
+                        showToast("请选择有效期")
+                        
+                        return false;
+                      } 
+                      else if(obj.list[i].photoList.length==0){
+                        showToast("请上传附件")
+                        
+                        return false;
+                      }
+                    }
+                 
+                   if(obj.singledata.applyReason.default==""){
+                    showToast("请填写申请原因")
+                   
+                    return false;
+                  }
+
+                 // alert(JSON.stringify(this.state.ajaxdata))
+
+                  let {loaded}=this.state;
+                  if(loaded){       
+                    this.setState({ loaded: false});
+                    this.dispatch('submitBatch',this.state.ajaxdata);
+                  }
+                  return false;
+
+
+                }
           }else{
 
             if(obj.department.value==""){
@@ -513,22 +614,22 @@ export default class Page extends Component {
                             <div onClick={()=>t.handleSelectAct('department')}>{t.state.ajaxdata.department.typetext}</div>
                           </Field>
                       </Group.List>
-                     
-                      <Group.List >
-                       
-                        <Field required label="所选活动" errMsg={t.state.ajaxdata.activityName.errtxt}  icon={<Icon name={t.state.ajaxdata.activityName.icon?'angle-right':'cross-round'} {...angleIconProps} onClick={()=>t.handleClearAct('activityName')} />}>
-                            <div onClick={()=>t.handleSelectAct('activityName')}>{t.state.ajaxdata.activityName.typetext}</div>
-                          </Field>
-                      </Group.List>                       
-                       {t.state.ajaxdata.rewardType.value!=5 ? (
+                     {t.state.ajaxdata.rewardType.value!=5 ? (
                       <Group.List >
                         <Field required label="发放类型" icon={<Icon name={'angle-right'} {...angleIconProps} />}>
                             <div onClick={()=>t.handleChangeNum()}>{t.state.ajaxdata.SingleOrBatch.typetext}</div>
                           </Field>
                       </Group.List>                        
                        ):null}
-                      <Tag ref='CashChild' parentuserInfo={t.state.ajaxdata.singledata}  arr={t.state.ajaxdata.list} parenthandleTextChange={t.handleTextChange} parentdelOneItem={t.delOneItem} parenthandleSelectCommon={t.handleSelectCommon} parenthandleClearCommon={t.handleClearCommon} />
-                      {t.state.ajaxdata.SingleOrBatch.value!=1 ? (
+                      <Group.List >
+                       
+                        <Field required label="所选活动" errMsg={t.state.ajaxdata.activityName.errtxt}  icon={<Icon name={t.state.ajaxdata.activityName.icon?'angle-right':'cross-round'} {...angleIconProps} onClick={()=>t.handleClearAct('activityName')} />}>
+                            <div onClick={()=>t.handleSelectAct('activityName')}>{t.state.ajaxdata.activityName.typetext}</div>
+                          </Field>
+                      </Group.List>                       
+                       
+                      <Tag ref='CashChild'  parentuserInfo={t.state.ajaxdata.singledata}  arr={t.state.ajaxdata.list} parenthandleTextChange={t.handleTextChange} parentdelOneItem={t.delOneItem} parenthandleSelectCommon={t.handleSelectCommon} parenthandleClearCommon={t.handleClearCommon} parentonDelete={t.handelPhotoDelete} parentonChange={t.handelPhotoChange} />
+                      {t.state.ajaxdata.SingleOrBatch.value!=1&&t.state.ajaxdata.list.length<7 ? (
                       <div className="t-LH44 t-BCd t-FAC t-MT16" onClick={()=>t.addOneItem()}  style={{color:'#09c'}}>{t.state.ajaxdata.rewardType.value==3 ?"增加加息券":"增加红包"}+</div>
                       ):null}
                      

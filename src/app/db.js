@@ -76,6 +76,13 @@ context.create('SomeModuleAPI', {
     data:{},
     
   },
+  submitBatch: {
+    mockUrl: 'query/redjson.json',
+    url: '/act_web/actdingding/v1/07',
+    header: {'Content-Type': 'application/json'},
+    data:{},
+    
+  },
 });
 
 export default context.api;
