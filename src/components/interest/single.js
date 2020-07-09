@@ -57,7 +57,9 @@ export default class reditem extends Component {
                                                       </Field>
                                                    </Group.List>
                                                   <Group.List>
-                                                      <TextField label="申请张数" value="1张" readOnly />
+                                                      <Field required label="申请张数" errMsg={item.applyNum.errtxt}   icon={<Icon name='angle-right' {...angleIconProps} />}>
+                                                        <div onClick={()=>t.props.parenthandleSelectCommon('applyNum',index)}>{item.applyNum.typetext}</div>
+                                                      </Field>
                                                    </Group.List>
                                                     <Group.List>
                                                       <TextField label="客户注册手机号" errMsg={t.props.parentuserInfo.userPhone.errtxt}  required placeholder="请输入" filter={value => t.numberFilter(value)} value={t.props.parentuserInfo.userPhone.default} onChange={(value) => { t.props.parenthandleTextChange('userPhone', value)}} />        

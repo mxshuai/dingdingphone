@@ -203,7 +203,7 @@ export default {
     totaldata.realizationPro=ajaxdata.list[0].productDate.value;
     totaldata.validityDays=ajaxdata.list[0].validityPeriod.value;
     totaldata.upperserialnumber=ajaxdata.dingcode;//钉钉流水号
-    totaldata.count=1;//申请张数
+    totaldata.count=ajaxdata.list[0].applyNum.value;//申请张数
   }else{
     totaldata.applyDeptName=ajaxdata.department.typetext;//申请部门名称（中文）
     totaldata.activityName=ajaxdata.activityName.typetext;//所选活动名称（中文）
@@ -221,7 +221,7 @@ export default {
     totaldata.auditImgUrl=ajaxdata.photoList[0].url;//申请原因
     totaldata.description=ajaxdata.singledata.applyReason.default;//申请原因
     totaldata.upperserialnumber=ajaxdata.dingcode;//钉钉流水号
-    totaldata.count=1;//申请张数
+    totaldata.count=ajaxdata.list[0].applyNum.value;//申请张数
 
   }
   
